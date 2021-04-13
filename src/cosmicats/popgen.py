@@ -427,7 +427,7 @@ def get_evolved_systems(initC, sys_type, n_proc):
                     'porb', 'ecc', 'sep', 'rad_1', 'rad_2', 'teff_1', 'teff_2', 
                     'lum_1', 'lum_2', 'bin_num', 'assigned_age', 
                     'R', 'R0', 'AGE', 'X', 'Y', 'Z', 'dist', 'FeH', 'met_stars', 
-                    'sys_type', 'met_sim']
+                    'sys_type', 'met_cosmic']
     
     if sys_type == 0:
         # APOGEE defo won't see any white dwarfs because they are too hot
@@ -530,7 +530,7 @@ def connect_simulations_to_stars(sample, sys_type, path, mets, lifetime_interp, 
     # for each metallicity, grab all the systems with metallicity=met
     # then assign binaries in that metallicity bin to those systems
     for met in mets:
-        sample_sys_met = sample.loc[sample.met_sim == met]
+        sample_sys_met = sample.loc[sample.met_cosmic == met]
         if len(sample_sys_met) >= 1:
             initC_matches = get_simulated_matches(path=path, met=met, sample_to_match=sample_sys_met, pop_var=pop_var)
             initC_matches['sys_type'] = np.ones_like(initC_matches.mass_1) * sys_type

@@ -477,7 +477,7 @@ def sample_stars(stars, mets, n_samp):
 
     # find cosmic metallicities which closest match to sfh metallicities
     ind_match = match_metallicities(met_list=mets,
-                                    met_stars=np.array(sub_sample['met_stars']))
+                                    met_stars=np.array(samp['met_stars']))
 
     samp['met_cosmic'] = np.array(mets)[ind_matches]
 

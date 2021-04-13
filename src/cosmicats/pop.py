@@ -141,7 +141,7 @@ class pop():
         # repeat the process until we have n_stop systems
         n_sys = 0
         n_sample = 0
-        while (n_sys < self.n_sys_stop):
+        while (n_sys < self.n_stop):
             # sample from SFH data set
             sample = popgen.sample_stars(stars=star_sample, 
                                          mets=self.mets,

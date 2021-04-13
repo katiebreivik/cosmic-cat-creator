@@ -1,6 +1,6 @@
 """A class for generating stellar populations"""
 
-from cosmicats import utils, gen_pop, apogee
+from cosmicats import utils, popgen, apogee
 from isochrones.mist.bc import MISTBolometricCorrectionGrid
 
 class pop():
@@ -44,17 +44,6 @@ class pop():
         interpolation for single star lifetime as a function of mass
         for the population metallicity
 
-    formation_efficiency : `list`
-        list containing the ratio of the number of stellar systems 
-        as a function of metallicity grids: self.mets with type == `sys_type`
-        to the number of initial conditions sampled to produce the dataset
-        **Note** this includes the binary fraction of the population
-
-    population_efficiency : `float`
-        The ratio of the size of the astrophyical population which has 
-        type == `sys_type` at present to the number of draws from the 
-        cosmic data and star formation history
-
     """
     def __init__(self, sys_type, n_stop, n_samp, mets, 
                  cosmic_path, sfh_model='Frankel19', seed=42,
@@ -78,16 +67,6 @@ class pop():
         # note: we use the minimum metallicity which gives the maximum lifetime
         self.lifetime_interp = utils.get_lifetime_interp(metallicity=min(self.mets))
 
-        # Get the formation efficiency as a function of metallicity
-        # NOTE : for the moment, we put in f_b by hand using the methods
-        # in popgen, however in the future, it would be good to implement
-        # a general treatment!
-        self.formation_efficiency = get_formation_efficiency(mets=self.mets,
-                                                             path=self.cosmic_path,
-                                                             qmin=self.pop_var,
-                                                             sys_type=self.sys_type,
-                                                             f_b=None)
-
 
     def get_formation_efficiency(self, f_b=None):
         """Get the formation efficiency as a function of metallicity
@@ -106,7 +85,7 @@ class pop():
             relative formation number per total population size for each 
             metallicity in simulation grid for each system type
         """
-        formation_efficiency = genpop.get_formation_efficiency(mets=self.mets,
+        formation_efficiency = popgen.get_formation_efficiency(mets=self.mets,
                                                                path=self.cosmic_path,
                                                                qmin=self.pop_var,
                                                                sys_type=self.sys_type,
@@ -147,7 +126,7 @@ class pop():
         # NOTE : for the moment, we put in f_b by hand using the methods
         # in popgen, however in the future, it would be good to implement
         # a general treatment!
-        formation_efficiency = genpop.get_formation_efficiency(mets=self.mets,
+        formation_efficiency = popgen.get_formation_efficiency(mets=self.mets,
                                                                path=self.cosmic_path,
                                                                qmin=self.pop_var,
                                                                sys_type=self.sys_type,
@@ -163,12 +142,12 @@ class pop():
         n_sample = 0
         while (n_sys < self.n_sys_stop):
             # sample from SFH data set
-            sample = genpop.sample_stars(stars=star_sample, 
+            sample = popgen.sample_stars(stars=star_sample, 
                                          mets=self.mets,
                                          n_samp = self.n_samp)
 
             # connect the sampled ages, positions, and metallicities to the cosmic population
-            pop_today = genpop.connect_simulations_to_stars(sample=sample, 
+            pop_today = popgen.connect_simulations_to_stars(sample=sample, 
                                                             sys_type=self.sys_type, 
                                                             path=self.cosmic_path, 
                                                             mets=self.mets, 

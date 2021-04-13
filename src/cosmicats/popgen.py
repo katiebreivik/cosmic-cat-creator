@@ -5,6 +5,7 @@ import astropy.coordinates as coord
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 from astropy import units as u
+from cosmic.evolve import Evolve
 
 from cosmicats import utils
 

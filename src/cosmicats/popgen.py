@@ -348,15 +348,17 @@ def filter_sim_set(sim_set, lifetime_interp):
     """
 
     if sim_set.sys_type.all() == 0:
+        sim_set = sim_set.loc[sim_set.mass_1 > 0.1]
         sim_set = sim_set.loc[sim_set.assigned_age - sim_set.tphys < 100 * lifetime_interp(sim_set.mass_1)]
-    
 
     elif sim_set.sys_type.all() == 1:
+        sim_set = sim_set.loc[(sim_set.mass_1 > 0.1) & (sim_set.mass_2 > 0.1)]
         sim_set = sim_set.loc[sim_set.assigned_age - sim_set.tphys < 100 * lifetime_interp(sim_set.mass_2)]
-    
+ 
     elif sim_set.sys_type.all() == 2:
+        sim_set = sim_set.loc[(sim_set.mass_1 > 0.1) & (sim_set.mass_2 > 0.1)]
         sim_set = sim_set.loc[sim_set.assigned_age - sim_set.tphys < 1000 * lifetime_interp(sim_set.mass_2)]
-    
+
     return sim_set
 
 def get_evolved_systems(initC, sys_type, n_proc):

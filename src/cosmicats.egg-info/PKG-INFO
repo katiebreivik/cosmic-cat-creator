@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: cosmicats
+Version: 0.0.1
+Summary: A package to generate astrophysical catalogs from cosmic data
+Home-page: https://github.com/katiebreivik/cosmic-cat-creator
+Author: Katie Breivik
+Author-email: kbreivik@flatironinstitute.org
+License: UNKNOWN
+Description: # cosmic-cat-creator
+        a tool to produce astrophysical catalogs from cosmic data
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

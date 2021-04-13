@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/cosmicats/__init__.py
+src/cosmicats/apogee.py
+src/cosmicats/photobs.py
+src/cosmicats/pop.py
+src/cosmicats/popgen.py
+src/cosmicats/utils.py
+src/cosmicats.egg-info/PKG-INFO
+src/cosmicats.egg-info/SOURCES.txt
+src/cosmicats.egg-info/dependency_links.txt
+src/cosmicats.egg-info/top_level.txt

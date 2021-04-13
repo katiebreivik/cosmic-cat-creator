@@ -1,6 +1,7 @@
 """A collection of methods to generating astrophysical populations"""
 import numpy as np
 import pandas as pd
+import astropy.coordinates as coord
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 from astropy import units as u

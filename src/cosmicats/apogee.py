@@ -1,5 +1,6 @@
 """A collection of methods to create synthetic APOGEE catalogs"""
 
+import numpy as np
 from cosmicats import photobs as obs
 
 __all__ = ['get_APOGEE_phot', 'binary_select', 'phot_select']

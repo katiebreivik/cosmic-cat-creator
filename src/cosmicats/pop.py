@@ -117,7 +117,7 @@ class pop():
             log_file = open(logfile_name, 'a')
 
         # set up Dataset of stars from sfh_model
-        star_sample = get_sfh_stars(self.sfh_model)        
+        star_sample = popgen.get_sfh_stars(self.sfh_model)        
 
         # initialize bolometric correction grid with isochrones
         bc_grid = MISTBolometricCorrectionGrid(['J', 'H', 'K'])

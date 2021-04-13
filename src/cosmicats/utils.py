@@ -1,6 +1,7 @@
 """A collection of utility functions for building catalogs"""
 
 import numpy as np
+import pandas as pd
 from scipy.interpolate import interp1d
 from cosmic.sample.initialbinarytable import InitialBinaryTable
 from cosmic.evolve import Evolve

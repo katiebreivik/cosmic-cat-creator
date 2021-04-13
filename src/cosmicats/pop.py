@@ -45,8 +45,9 @@ class pop():
 
     """
     def __init__(self, sys_type, n_stop, n_samp, mets, 
-                 cosmic_path, sfh_model='Frankel19', seed=42,
-                 lifetime_interp, pop_var=None):
+                 cosmic_path, lifetime_interp, 
+                 sfh_model='Frankel19', seed=42,
+                 pop_var=None):
 
         self.sys_type = sys_type
         self.n_stop = n_stop

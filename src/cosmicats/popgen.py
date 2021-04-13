@@ -561,6 +561,6 @@ def connect_simulations_to_stars(sample, sys_type, path, mets, lifetime_interp, 
         # evolve the selected binaries to the precise ages 
         # supplied by the star sample
         initC_set = initC_set.reset_index(drop=True)
-        sim_set = get_evolved_systems(initC_set, sys_type, lifetime_interp, n_proc)
+        sim_set = get_evolved_systems(initC_set, sys_type, n_proc)
         
     return sim_set

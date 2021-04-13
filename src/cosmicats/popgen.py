@@ -470,7 +470,7 @@ def sample_stars(stars, mets, n_samp):
     """
 
     # Sample a population from the stars DataFrame
-    samp = stars.sample(n_samp, replace = True
+    samp = stars.sample(n_samp, replace = True)
 
     # find cosmic metallicities which closest match to sfh metallicities
     ind_match = match_metallicities(met_list=mets,

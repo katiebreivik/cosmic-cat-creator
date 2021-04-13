@@ -101,7 +101,7 @@ class pop():
         selections on the data"""
 
         datfile_name = 'pop_{}_var_{}.h5'.format(self.sys_type, self.pop_var)
-        logfile_name = 'log_pop_{}_var_{}.h5'.format(self.sys_type, self.pop_var)
+        logfile_name = 'log_pop_{}_var_{}.txt'.format(self.sys_type, self.pop_var)
 
         # open up a file to write data to in case the run stops
         # Open the hdf5 file to store the fixed population data

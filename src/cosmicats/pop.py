@@ -2,6 +2,7 @@
 
 from cosmicats import utils, popgen, apogee
 from isochrones.mist.bc import MISTBolometricCorrectionGrid
+import pandas as pd
 
 class pop():
     """Class for generic populations

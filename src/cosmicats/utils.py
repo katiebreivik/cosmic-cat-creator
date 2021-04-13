@@ -105,7 +105,7 @@ def get_lifetime_interp(metallicity):
         interpolator for single star lifetime as a function of mass
     """
   
-    mass = np.linspace(0.1, 150.0, 10000)
+    mass = np.linspace(0.1, 150.0, 100)
     init_bin_hi_met = InitialBinaryTable.InitialBinaries(m1=mass, 
                                                          m2=np.zeros_like(mass), 
                                                          porb=np.zeros_like(mass), 

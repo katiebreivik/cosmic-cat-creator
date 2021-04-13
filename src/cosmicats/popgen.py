@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
+from astropy import units as u
 
 from cosmicats import utils
 

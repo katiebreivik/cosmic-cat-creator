@@ -314,7 +314,7 @@ def get_simulated_matches(path, met, sample_to_match, pop_var):
     """
     # read in the simulated binary data that has metallicities which 
     # are matched to sub_sample_sys_met
-    sim_dat, initC_dat = sim_data_read(path=path, metallicity=met, qmin=pop_var)
+    sim_dat, initC_dat = utils.sim_data_read(path=path, metallicity=met, qmin=pop_var)
     
     initC_dat['acc_lim'] = -1
     initC_dat['don_lim'] = -1

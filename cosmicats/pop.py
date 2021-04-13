@@ -1,6 +1,6 @@
 """A class for generating stellar populations"""
 
-from cosmic-cats import utils, gen_pop, apogee
+from cosmicats import utils, gen_pop, apogee
 from isochrones.mist.bc import MISTBolometricCorrectionGrid
 
 class pop():

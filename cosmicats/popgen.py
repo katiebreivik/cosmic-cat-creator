@@ -3,7 +3,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
-from cosmic-cats import utils
+from cosmicats import utils
 
 __all__ = ['get_star_3d_positions', 'get_sfh_stars', 'metallicity_dependent_binary_fraction',
            'metallicity_dependent_single_fraction', 'match_metallicities', 'get_simulated_data_stats',

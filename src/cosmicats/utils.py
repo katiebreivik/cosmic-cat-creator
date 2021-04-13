@@ -110,7 +110,7 @@ def get_lifetime_interp(metallicity):
                                                          m2=np.zeros_like(mass), 
                                                          porb=np.zeros_like(mass), 
                                                          ecc=np.zeros_like(mass), 
-                                                         tphysf=np.ones_like(mass) * 1000000000.0, 
+                                                         tphysf=np.ones_like(mass) * 10000000.0, 
                                                          kstar1=np.ones_like(mass), 
                                                          kstar2=np.zeros_like(mass), 
                                                          metallicity=np.ones_like(mass) * metallicity)

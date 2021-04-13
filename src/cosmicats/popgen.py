@@ -88,7 +88,7 @@ def metallicity_dependent_binary_fraction(met):
     f_s : `float`
         single fraction
     """
-    Fe_H = get_FeH_from_Z(met, Z_sun=0.014)
+    Fe_H = utils.get_FeH_from_Z(met, Z_sun=0.014)
     if type(met) == float:
         if Fe_H <= -1.0:
             f_b = -0.0648 * Fe_H + 0.3356
@@ -127,7 +127,7 @@ def metallicity_dependent_single_fraction(met):
     f_s : `float`
         single fraction
     """
-    Fe_H = get_FeH_from_Z(met, Z_sun=0.014)
+    Fe_H = utils.get_FeH_from_Z(met, Z_sun=0.014)
     if type(met) == float:
         if Fe_H <= -1.0:
             f_b = -0.0648 * Fe_H + 0.3356

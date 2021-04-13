@@ -431,17 +431,17 @@ def get_evolved_systems(initC, sys_type, n_proc):
     
     if sys_type == 0:
         # APOGEE defo won't see any white dwarfs because they are too hot
-        initC = initC.loc[(initC.kstar_1 < 10) & (initC.mass_1 > 0.1)] 
+        initC = initC.loc[(initC.kstar_1 < 10) & (initC.mass_1 > 0.2)] 
 
     elif sys_type == 1:
         initC = initC.loc[(initC.porb > 0)]
-        initC = initC.loc[((initC.kstar_2 < 10) & (initC.kstar_1 < 10) & (initC.mass_2 > 0.1)) |
-                              ((initC.kstar_1 < 10) & (initC.mass_2 > 0.1)) | 
-                              ((initC.kstar_2 < 10) & (initC.mass_2 > 0.1))]
+        initC = initC.loc[((initC.kstar_2 < 10) & (initC.kstar_1 < 10) & (initC.mass_2 > 0.2)) |
+                              ((initC.kstar_1 < 10) & (initC.mass_2 > 0.2)) | 
+                              ((initC.kstar_2 < 10) & (initC.mass_2 > 0.2))]
             
     elif sys_type == 2:
         initC = initC.loc[initC.porb > 0]
-        initC = initC.loc[((initC.kstar_1 == 14) & (initC.kstar_2 < 10) & (initC.mass_2 > 0.1))]
+        initC = initC.loc[((initC.kstar_1 == 14) & (initC.kstar_2 < 10) & (initC.mass_2 > 0.2))]
 
 
     dat_today = initC[columns_keep]

@@ -79,7 +79,7 @@ def sim_data_read(path, metallicity, qmin):
         dat = pd.read_hdf(path+str(metallicity)+'/'+filename, key='bpp')
         initC = pd.read_hdf(path+str(metallicity)+'/'+filename, key='initC')
     
-    elif 'binaries' in path:
+    elif 'binary' in path:
         filename = 'binaries_qmin_{}.h5'.format(qmin)
         dat = pd.read_hdf(path+str(metallicity)+'/'+filename, key='bpp')
         initC = pd.read_hdf(path+str(metallicity)+'/'+filename, key='initC')

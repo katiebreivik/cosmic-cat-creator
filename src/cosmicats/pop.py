@@ -140,6 +140,7 @@ class pop():
         # repeat the process until we have n_stop systems
         n_sys = 0
         n_sample = 0
+        n_pop = 0
         while (n_sys < self.n_stop):
             # sample from SFH data set
             sample = popgen.sample_stars(stars=star_sample, 
@@ -164,12 +165,13 @@ class pop():
             pop_today = apogee.binary_select(pop_today)
             pop_today = apogee.phot_select(pop_today)
 
-            n_sample += n_samp
+            n_sample += self.n_samp
             n_sys += len(pop_today.loc[pop_today.apogee_select == 1])
+            n_pop += len(pop_today)
 
             dat_store.append('pop_sim', pop_today)
             log_file.write('size of sys_type= {}\n'.format(self.sys_type))
-            log_file.write(str(len(n_sample))+'\n')
+            log_file.write(str(n_pop)+'\n')
             log_file.write('\n')
             if self.sys_type > 0:
                 log_file.write('size of observed single star and binary population:\n')

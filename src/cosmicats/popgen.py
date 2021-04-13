@@ -479,7 +479,7 @@ def sample_stars(stars, mets, n_samp):
     ind_match = match_metallicities(met_list=mets,
                                     met_stars=np.array(samp['met_stars']))
 
-    samp['met_cosmic'] = np.array(mets)[ind_matches]
+    samp['met_cosmic'] = np.array(mets)[ind_match]
 
     return samp
 

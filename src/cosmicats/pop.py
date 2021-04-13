@@ -39,8 +39,6 @@ class pop():
         Can be supplied for populations where sys_type is the same but the
         population is varied in some way, like if qmin is different 
 
-    Attributes
-    ----------
     lifetime_interp : `scipy.interpolate.interp1d`
         interpolation for single star lifetime as a function of mass
         for the population metallicity
@@ -48,7 +46,7 @@ class pop():
     """
     def __init__(self, sys_type, n_stop, n_samp, mets, 
                  cosmic_path, sfh_model='Frankel19', seed=42,
-                 pop_var=None):
+                 lifetime_interp, pop_var=None):
 
         self.sys_type = sys_type
         self.n_stop = n_stop
@@ -66,7 +64,7 @@ class pop():
 
         # set up the single star lifetime interpolator
         # note: we use the minimum metallicity which gives the maximum lifetime
-        self.lifetime_interp = utils.get_lifetime_interp(metallicity=min(self.mets))
+        self.lifetime_interp = lifetime_interp
 
 
     def get_formation_efficiency(self, f_b=None):

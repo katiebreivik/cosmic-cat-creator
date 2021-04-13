@@ -89,7 +89,7 @@ class pop():
                                                              f_b=None)
 
 
-    def get_formation_efficiency(self, f_b=None)
+    def get_formation_efficiency(self, f_b=None):
         """Get the formation efficiency as a function of metallicity
         NOTE : for the moment, we put in f_b by hand using the methods
         in popgen, however in the future, it would be good to implement

@@ -398,8 +398,8 @@ def get_evolved_systems(initC, sys_type, n_proc):
     
     bcm_nan = bcm.loc[bcm.bin_num.isin(bpp_nan_bin_num)]
     initCond_nan = initCond.loc[initCond.bin_num.isin(bpp_nan_bin_num)]
-    bcm_nan.to_hdf('nan_dat.h5', key='bcm')
-    initCond_nan.to_hdf('nan_dat.h5', key='initC')
+    bcm_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='bcm')
+    initCond_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='initC')
 
     bcm = bcm.loc[~bcm.bin_num.isin(bpp_nan_bin_num)]
     initC = initC.loc[~initC.bin_num.isin(bpp_nan_bin_num)]

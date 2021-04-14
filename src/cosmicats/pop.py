@@ -7,7 +7,7 @@ import pandas as pd
 class pop():
     """Class for generic populations
 
-    Parameters
+    Attributes
     ----------
     sys_type : `int`
         current sys_types include: 
@@ -105,6 +105,7 @@ class pop():
         # open up a file to write data to in case the run stops
         # Open the hdf5 file to store the fixed population data
         try:
+            dat_store = pd.HDFStore(datfile_name)
             self.pop = pd.read_hdf(datfile_name, 'pop_sim')
             log_file = open(logfile_name, 'a')
             log_file.write('There are already: '+str(self.pop.shape[0])+' systems in the population.\n')
@@ -185,7 +186,7 @@ class pop():
             log_file.flush()
 
         dat_store.append('n_samp_tot', pd.DataFrame([n_sample]))
-        dat_store.append('seed', pd.DataFrame([args.seed]))
+        dat_store.append('seed', pd.DataFrame([self.seed]))
         log_file.write('all done friend!')
         log_file.close()
         dat_store.close() 

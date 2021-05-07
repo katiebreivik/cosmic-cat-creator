@@ -15,9 +15,14 @@ class pop():
         1 = general binary stars
         2 = binaries containing black holes
 
-    n_stop : `int`
-        stopping condition which specifies the maximum size of the population
+    n_stop_APOGEE : `int`
+        stopping condition which specifies the maximum size of the 
+        APOGEE population
 
+    n_stop_MW : `int`
+        stopping condition which specifies the maximum size of the 
+        MW population
+        
     n_samp : `int`
         specifies the number of systems to sample from the cosmic and sfh data
 
@@ -44,13 +49,15 @@ class pop():
         for the population metallicity
 
     """
-    def __init__(self, sys_type, n_stop, n_samp, mets, 
+    def __init__(self, sys_type, n_stop_APOGEE, 
+                 n_stop_MW, n_samp, mets, 
                  cosmic_path, lifetime_interp, 
                  sfh_model='Frankel19', seed=42,
                  pop_var=None):
 
         self.sys_type = sys_type
-        self.n_stop = n_stop
+        self.n_stop_APOGEE = n_stop_APOGEE
+        self.n_stop_MW = n_stop_MW
         self.n_samp = n_samp
         self.mets = mets
         self.cosmic_path = cosmic_path
@@ -139,10 +146,10 @@ class pop():
         # based on orbital period, brightness, temperature, and log g
 
         # repeat the process until we have n_stop systems
-        n_sys = 0
-        n_sample = 0
-        n_pop = 0
-        while (n_sys < self.n_stop):
+        n_APOGEE = 0
+        n_MW = 0
+        n_IC = 0
+        while (n_APOGEE < self.n_stop):
             # sample from SFH data set
             sample = popgen.sample_stars(stars=star_sample, 
                                          mets=self.mets,
@@ -166,26 +173,34 @@ class pop():
             pop_today = apogee.binary_select(pop_today)
             pop_today = apogee.phot_select(pop_today)
 
-            n_sample += self.n_samp
-            n_sys += len(pop_today.loc[pop_today.phot_select == 1])
-            n_pop += len(pop_today)
+            n_IC += self.n_samp
+            n_MW += len(pop_today)
 
-            dat_store.append('pop_sim', pop_today)
+            if n_MW < self.n_MW_stop:
+                dat_store.append('MW_pop', pop_today)
+                dat_store.append('n_IC_MW', pd.DataFrame([n_IC]))
+            
+            pop_APOGEE = pop_today.loc[pop_today.phot_select == 1]
+            n_APOGEE += len(pop_today.loc[pop_today.phot_select == 1])
+            
+            dat_store.append('APOGEE_pop', pop_today)
+            dat_store.append('n_IC_APOGEE', pd.DataFrame([n_IC]))
+            
             log_file.write('size of sys_type= {}\n'.format(self.sys_type))
-            log_file.write(str(n_pop)+'\n')
+            log_file.write(str(n_IC)+'\n')
             log_file.write('\n')
             if self.sys_type > 0:
                 log_file.write('size of observed single star and binary population:\n')
                 log_file.write(str(len(pop_today.loc[pop_today.obs_type == 0]))+'\n')
                 log_file.write(str(len(pop_today.loc[pop_today.obs_type == 1]))+'\n')
                 log_file.write('\n')
-            log_file.write('size of apogee selected log g and color population:\n')
-            log_file.write(str(n_sys)+'\n')
+            log_file.write('size of photometrically selected apogee population:\n')
+            log_file.write(str(n_APOGEE)+'\n')
             log_file.write('\n')
             log_file.write('\n')
             log_file.flush()
 
-            dat_store.append('n_samp_tot', pd.DataFrame([n_sample]))
+            
         dat_store.append('seed', pd.DataFrame([self.seed]))
         log_file.write('all done friend!')
         log_file.close()

@@ -149,7 +149,7 @@ class pop():
         n_APOGEE = 0
         n_MW = 0
         n_IC = 0
-        while (n_APOGEE < self.n_stop):
+        while (n_APOGEE < self.n_stop_APOGEE):
             # sample from SFH data set
             sample = popgen.sample_stars(stars=star_sample, 
                                          mets=self.mets,

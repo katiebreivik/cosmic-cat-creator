@@ -158,16 +158,16 @@ class pop():
                                                             pop_var=self.pop_var)
 
             # compute the photometry of the population
-            pop_today = apogee.get_APOGEE_phot(sim_set=pop_today, 
-                                               sys_type=self.sys_type,
-                                               bc_grid=bc_grid)
+            pop_today = apogee.get_2MASS_phot(sim_set=pop_today, 
+                                              sys_type=self.sys_type,
+                                              bc_grid=bc_grid)
 
             # perform photometry and binarity selections
             pop_today = apogee.binary_select(pop_today)
             pop_today = apogee.phot_select(pop_today)
 
             n_sample += self.n_samp
-            n_sys += len(pop_today.loc[pop_today.apogee_select == 1])
+            n_sys += len(pop_today.loc[pop_today.phot_select == 1])
             n_pop += len(pop_today)
 
             dat_store.append('pop_sim', pop_today)
@@ -185,7 +185,7 @@ class pop():
             log_file.write('\n')
             log_file.flush()
 
-        dat_store.append('n_samp_tot', pd.DataFrame([n_sample]))
+            dat_store.append('n_samp_tot', pd.DataFrame([n_sample]))
         dat_store.append('seed', pd.DataFrame([self.seed]))
         log_file.write('all done friend!')
         log_file.close()

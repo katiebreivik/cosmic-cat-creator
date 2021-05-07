@@ -3,9 +3,9 @@
 import numpy as np
 from cosmicats import photobs as obs
 
-__all__ = ['get_APOGEE_phot', 'binary_select', 'phot_select']
+__all__ = ['get_2MASS_phot', 'binary_select', 'phot_select']
 
-def get_APOGEE_phot(sim_set, sys_type, bc_grid):
+def get_2MASS_phot(sim_set, sys_type, bc_grid):
     """Computes J,H,K photometry subject to dust extinction
     using the MIST boloemtric correction grid which contains
     filters J,H,K
@@ -58,10 +58,10 @@ def get_APOGEE_phot(sim_set, sys_type, bc_grid):
         phot_2 = obs.get_photometry_2(sim_set, bc_grid)
         m_app_2, J_app_2, H_app_2, K_app_2, m_abs_2, J_abs_2, H_abs_2, K_abs_2 = phot_2
         
-        # check if the primary or secondary is brighter
+        # check if the primary or secondary is brighter in 2MASS K
         sys_bright = np.ones(len(sim_set))
-        ind_2_bright, = np.where(m_app_2 > m_app_1)
-        ind_1_bright, = np.where(m_app_2 <= m_app_1)
+        ind_2_bright, = np.where(K_app_2 > K_app_1)
+        ind_1_bright, = np.where(K_app_2 <= K_app_1)
         sys_bright[ind_2_bright] = 2.0
         sim_set['sys_bright'] = sys_bright
         
@@ -116,11 +116,21 @@ def binary_select(dat):
     dat.loc[(dat.sys_type > 0) & (dat.porb > 2) & (dat.porb < 365.25), 'obs_type'] = 1.0
     return dat
 
-def phot_select(dat, logg_lo = -0.5, logg_hi = 5.5, teff_lo = 3500, teff_hi = 10000):
+#Add function that does color cut: J-K > 0.5 (main survey for APOGEE 1), APOGEE 2 made the cut bluer.
+# so we probs want APOGEE 2
+
+def phot_select(dat, JminusK_lo=0.5):
+    dat['phot_select'] = np.zeros(len(dat))
+    dat.loc[(dat.J_app - dat.K_app > JminusK_lo) & (dat.H_app < 15),
+           'phot_select'] = 1.0
+
+    return dat
+
+def gold_select(dat, logg_lo = -0.5, logg_hi = 5.5, teff_lo = 3500, teff_hi = 10000):
     
     #dat = dat.loc[dat.H_app < 15].copy()
     #ignoring [M/H], s_MAP for now
-    dat['apogee_select'] = np.zeros(len(dat))
+    dat['gold_select'] = np.zeros(len(dat))
     dat.loc[(dat.logg_obs < logg_hi) & (dat.logg_obs > logg_lo) &
             (dat.teff_obs < teff_hi) & (dat.teff_obs > teff_lo) &
             (dat.H_app < 15), 'apogee_select'] = 1.0

@@ -398,8 +398,8 @@ def get_evolved_systems(initC, sys_type, n_proc):
     
     bcm_nan = bcm.loc[bcm.bin_num.isin(bpp_nan_bin_num)]
     initCond_nan = initCond.loc[initCond.bin_num.isin(bpp_nan_bin_num)]
-    bcm_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='bcm')
-    initCond_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='initC')
+    #bcm_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='bcm')
+    #initCond_nan.to_hdf('nan_dat_{}.h5'.format(sys_type), key='initC')
 
     bcm = bcm.loc[~bcm.bin_num.isin(bpp_nan_bin_num)]
     initC = initC.loc[~initC.bin_num.isin(bpp_nan_bin_num)]
@@ -410,7 +410,7 @@ def get_evolved_systems(initC, sys_type, n_proc):
         initC_weird = initC.loc[~initC.bin_num.isin(bcm.bin_num)]
         print('warning: there are {} systems that did not match in the evolution'.format(len(initC_weird)))
         print(bpp.loc[bpp.bin_num.isin(initC_weird.bin_num)][['tphys', 'mass_1', 'mass_2', 'sep', 'evol_type']])
-        initC_weird.to_hdf('initC_weird_{}.h5'.format(len(initC_weird)), key='initC')
+        initC_weird.to_hdf('initC_weird_{}_{}.h5'.format(len(initC_weird), sys_type), key='initC')
         initC = initC.loc[initC.bin_num.isin(bcm.bin_num)]
     initC['tphys'] = bcm.tphys.values
     initC['kstar_1'] = bcm.kstar_1.values

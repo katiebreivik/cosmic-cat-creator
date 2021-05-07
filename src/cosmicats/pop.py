@@ -176,7 +176,7 @@ class pop():
             n_IC += self.n_samp
             n_MW += len(pop_today)
 
-            if n_MW < self.n_MW_stop:
+            if n_MW < self.n_stop_MW:
                 dat_store.append('MW_pop', pop_today)
                 dat_store.append('n_IC_MW', pd.DataFrame([n_IC]))
             

@@ -189,6 +189,10 @@ class pop():
         MW_sim_write = True
 
         # repeat the process until we have n_stop_APOGEE systems in the APOGEE population
+
+        n_APOGEE = 0
+        n_MW = 0
+        n_IC = 0
         while (n_APOGEE < self.n_stop_APOGEE):
             # sample from SFH data set
             sample = popgen.sample_stars(stars=star_sample, 
@@ -257,7 +261,6 @@ class pop():
 
             if n_MW > self.n_stop_MW:
                 MW_sim_write = False
-
         dat_store.append('seed', pd.DataFrame([self.seed]))
         log_file.write('all done friend!')
         log_file.close()

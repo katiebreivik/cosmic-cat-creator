@@ -14,6 +14,7 @@ __all__ = ['get_star_3d_positions', 'get_sfh_stars', 'metallicity_dependent_bina
            'get_formation_efficiency', 'get_simulated_matches', 'filter_sim_set',
            'get_evolved_systesm', 'sample_stars', 'connect_simulations_to_stars']
 
+
 def get_star_3d_positions(stars):
     """Uses astropy to get cartesian Galactocentric coordinates and
     distances to stars of interest
@@ -30,19 +31,20 @@ def get_star_3d_positions(stars):
         coordinates and distance
     """
 
-    phi = np.random.uniform(0, 2*np.pi, len(stars))
+    phi = np.random.uniform(0, 2 * np.pi, len(stars))
     theta = theta = np.pi - np.arccos(np.random.uniform(-1, 1, len(stars)))
-    
+
     stars['X'] = stars['R'] * np.cos(phi) * np.sin(theta)
     stars['Y'] = stars['R'] * np.sin(phi) * np.sin(theta)
     stars['Z'] = stars['R'] * np.cos(theta)
     c = SkyCoord(x=np.array(stars.X) * u.kpc,
-                 y=np.array(stars.Y) * u.kpc, 
+                 y=np.array(stars.Y) * u.kpc,
                  z=np.array(stars.Z) * u.kpc,
                  frame=coord.Galactocentric)
     stars['dist'] = c.transform_to(coord.ICRS).distance.to(u.kpc)
-    
+
     return stars
+
 
 def get_sfh_stars(sfh_model):
     """Generates a dataset of stars with positions, ages, and metallicities
@@ -66,12 +68,13 @@ def get_sfh_stars(sfh_model):
         sfh_read = './2021-02-16_Breivik_mockmw.fits'
         star_sample = Table.read(sfh_read).to_pandas()
         star_sample = get_star_3d_positions(stars=star_sample)
-    
+
         star_sample['met_stars'] = utils.get_Z_from_FeH(star_sample['FeH'], Z_sun=0.014)
     else:
         raise ValueError("We only support sfh_model='Frankel19' at this time. Sorry bout it!")
 
     return star_sample
+
 
 def metallicity_dependent_binary_fraction(met):
     """Computes the binary, and single by way of only having 
@@ -107,11 +110,12 @@ def metallicity_dependent_binary_fraction(met):
             f_b[ind_lo] = -0.0648 * Fe_H[ind_lo] + 0.3356
         if len(ind_hi) > 0:
             f_b[ind_hi] = -0.1977 * Fe_H[ind_hi] + 0.2025
-            
+
     f_s = 1 - f_b
-    
+
     return f_b
-    
+
+
 def metallicity_dependent_single_fraction(met):
     """Computes the binary, and single by way of only having 
     single stars and binary systems, fraction of a population
@@ -146,15 +150,15 @@ def metallicity_dependent_single_fraction(met):
             f_b[ind_lo] = -0.0648 * Fe_H[ind_lo] + 0.3356
         if len(ind_hi) > 0:
             f_b[ind_hi] = -0.1977 * Fe_H[ind_hi] + 0.2025
-            
+
     f_s = 1 - f_b
-    
+
     return f_s
-    
+
 
 def match_metallicities(met_list, met_stars):
     """Matches the metallicities of Neige's star samples to
-    the metallcity bins of Katie's simulated binary populations
+    the metallicity bins of Katie's simulated binary populations
     such that every stellar metallicity is assigned one-to-one
     to the closest metallicity bin
 
@@ -176,10 +180,11 @@ def match_metallicities(met_list, met_stars):
     for met in met_list:
         diff.append(np.abs(np.array(met_stars) - met))
 
-    diff = np.vstack(diff)  
+    diff = np.vstack(diff)
     inds = np.argmin(diff, axis=0)
 
     return inds
+
 
 def get_simulated_data_stats(path, metallicity, var):
     """Gathers the number of simulated systems and the total simulated ZAMS
@@ -204,29 +209,30 @@ def get_simulated_data_stats(path, metallicity, var):
     """
     if 'single' in path:
         filename = 'singles.h5'
-        bcm = pd.read_hdf(path+str(metallicity)+'/'+filename, key='bcm')
-        n_sys = np.max(pd.read_hdf(path+str(metallicity)+'/'+filename, key='n_sim'))[0]
-    
+        bcm = pd.read_hdf(path + str(metallicity) + '/' + filename, key='bcm')
+        n_sys = np.max(pd.read_hdf(path + str(metallicity) + '/' + filename, key='n_sim'))[0]
+
     elif 'binary' in path:
         filename = 'binaries_{}.h5'.format(var)
-        bcm = pd.read_hdf(path+str(metallicity)+'/'+filename, key='bcm')
-        n_sys = np.max(pd.read_hdf(path+str(metallicity)+'/'+filename, key='n_sim'))[0]
-    
+        bcm = pd.read_hdf(path + str(metallicity) + '/' + filename, key='bcm')
+        n_sys = np.max(pd.read_hdf(path + str(metallicity) + '/' + filename, key='n_sim'))[0]
+
     elif 'BH' in path:
         ### NOTE ### : BH_LCs are assumed to have a binary fraction of 70%
         ############   and the n_stars contains all of the stars, from single
         ############   stars and binary systems, to produce the BH-LC population
-        filename = 'dat_kstar1_14_kstar2_0_9_SFstart_13700.0_SFduration_0.0_metallicity_'+str(metallicity)+'.h5'
-        bpp = pd.read_hdf(path+'/'+var+'/'+filename, key='bcm')
+        filename = 'dat_kstar1_14_kstar2_0_9_SFstart_13700.0_SFduration_0.0_metallicity_' + str(metallicity) + '.h5'
+        bpp = pd.read_hdf(path + '/' + var + '/' + filename, key='bcm')
         AIC_bin_nums = bpp.loc[bpp.kstar_1 == 13].bin_num.unique()
-        bcm = pd.read_hdf(path+'/'+var+'/'+filename, key='bcm')
-        #bcm = bcm.loc[~bcm.bin_num.isin(AIC_bin_nums)]
-        n_sys = np.max(pd.read_hdf(path+'/'+var+'/'+filename, key='n_stars'))[0]
+        bcm = pd.read_hdf(path + '/' + var + '/' + filename, key='bcm')
+        # bcm = bcm.loc[~bcm.bin_num.isin(AIC_bin_nums)]
+        n_sys = np.max(pd.read_hdf(path + '/' + var + '/' + filename, key='n_stars'))[0]
     # xi is the number of unique systems divided by the total
     # amount of stars simulated stars
-    xi = len(bcm.bin_num.unique())/n_sys
-    
+    xi = len(bcm.bin_num.unique()) / n_sys
+
     return xi
+
 
 def get_formation_efficiency(mets, path, var, sys_type, f_b=None):
     """Reads in saved data containing relative formation number 
@@ -260,10 +266,10 @@ def get_formation_efficiency(mets, path, var, sys_type, f_b=None):
         metallicity in simulation grid for each system type
     
     """
-    
+
     # get relative formation number per unit solar mass for each metallicity
     xi = []
-    
+
     if sys_type == 0:
         if f_b == None:
             weights = metallicity_dependent_single_fraction(mets)
@@ -282,7 +288,7 @@ def get_formation_efficiency(mets, path, var, sys_type, f_b=None):
 
     for met, weight in zip(mets, weights):
         xi.append(weight * get_simulated_data_stats(path=path, metallicity=met, var=var))
-            
+
     xi = np.array(xi, dtype=object)
     return xi
 
@@ -315,15 +321,16 @@ def get_simulated_matches(path, met, sample_to_match, pop_var):
     # read in the simulated binary data that has metallicities which 
     # are matched to sub_sample_sys_met
     sim_dat, initC_dat = utils.sim_data_read(path=path, metallicity=met, var=pop_var)
-    
+
     initC_dat['acc_lim'] = -1
     initC_dat['don_lim'] = -1
-    
+
     # sample the same number of systems from sim_dat as sub_sample_sys_met
     initC_dat_sample = initC_dat.sample(len(sample_to_match), replace=True)
-    initC_dat_sample = pd.concat([initC_dat_sample.reset_index(drop=True), sample_to_match.reset_index(drop=True)], axis=1)
+    initC_dat_sample = pd.concat([initC_dat_sample.reset_index(drop=True), sample_to_match.reset_index(drop=True)],
+                                 axis=1)
     initC_dat_sample['assigned_age'] = np.array(sample_to_match['AGE'].values) * 1000
-    
+
     return initC_dat_sample
 
 
@@ -354,12 +361,13 @@ def filter_sim_set(sim_set, lifetime_interp):
     elif sim_set.sys_type.all() == 1:
         sim_set = sim_set.loc[(sim_set.mass_1 > 0.1) & (sim_set.mass_2 > 0.1)]
         sim_set = sim_set.loc[sim_set.assigned_age - sim_set.tphys < 100 * lifetime_interp(sim_set.mass_2)]
- 
+
     elif sim_set.sys_type.all() == 2:
         sim_set = sim_set.loc[(sim_set.mass_1 > 0.1) & (sim_set.mass_2 > 0.1)]
         sim_set = sim_set.loc[sim_set.assigned_age - sim_set.tphys < 1000 * lifetime_interp(sim_set.mass_2)]
 
     return sim_set
+
 
 def get_evolved_systems(initC, sys_type, n_proc):
     """Evolves set of matched cosmic and sfh data up to present day population
@@ -381,7 +389,7 @@ def get_evolved_systems(initC, sys_type, n_proc):
         present day population of stellar systems from cosmic data with ages, positions, and,
         metallicities provided by initC data
     """
-    
+
     initC['tphysf'] = initC.assigned_age.values
     initC['dtp'] = initC.assigned_age.values
     initC['pts1'] = np.ones(len(initC)) * 0.05
@@ -392,15 +400,14 @@ def get_evolved_systems(initC, sys_type, n_proc):
     initC.loc[initC.bin_num.isin(AIC_bin_num.unique()), 'AIC'] = 1.0
 
     bpp_nan_bin_num = bpp.loc[bpp.mass_1.isnull()].bin_num.unique()
-    
+
     bcm_nan = bcm.loc[bcm.bin_num.isin(bpp_nan_bin_num)]
     initCond_nan = initCond.loc[initCond.bin_num.isin(bpp_nan_bin_num)]
-    
     bcm = bcm.loc[~bcm.bin_num.isin(bpp_nan_bin_num)]
     initC = initC.loc[~initC.bin_num.isin(bpp_nan_bin_num)]
 
     bcm = bcm.loc[bcm.tphys > 0].copy()
-    bcm = bcm.reset_index(drop = False)
+    bcm = bcm.reset_index(drop=False)
     if len(bcm) != len(initC):
         initC_weird = initC.loc[~initC.bin_num.isin(bcm.bin_num)]
         print('warning: there are {} systems that did not match in the evolution'.format(len(initC_weird)))
@@ -422,25 +429,24 @@ def get_evolved_systems(initC, sys_type, n_proc):
     initC['teff_1'] = bcm.teff_1.values
     initC['teff_2'] = bcm.teff_2.values
     columns_keep = ['tphys', 'kstar_1', 'kstar_2', 'mass_1', 'mass_2',
-                    'porb', 'ecc', 'sep', 'rad_1', 'rad_2', 'teff_1', 'teff_2', 
-                    'lum_1', 'lum_2', 'bin_num', 'bin_num_grid', 'assigned_age', 
-                    'R', 'R0', 'AGE', 'X', 'Y', 'Z', 'dist', 'FeH', 'met_stars', 
+                    'porb', 'ecc', 'sep', 'rad_1', 'rad_2', 'teff_1', 'teff_2',
+                    'lum_1', 'lum_2', 'bin_num', 'bin_num_grid', 'assigned_age',
+                    'R', 'R0', 'AGE', 'X', 'Y', 'Z', 'dist', 'FeH', 'met_stars',
                     'sys_type', 'met_cosmic']
-    
+
     if sys_type == 0:
         # APOGEE defo won't see any white dwarfs because they are too hot
-        initC = initC.loc[(initC.kstar_1 < 10)] 
+        initC = initC.loc[(initC.kstar_1 < 10)]
 
     elif sys_type == 1:
         initC = initC.loc[(initC.porb > 0)]
         initC = initC.loc[((initC.kstar_2 < 10) & (initC.kstar_1 < 10)) |
-                              ((initC.kstar_1 < 10)) | 
-                              ((initC.kstar_2 < 10))]
-            
+                          (initC.kstar_1 < 10) |
+                          (initC.kstar_2 < 10)]
+
     elif sys_type == 2:
         initC = initC.loc[initC.porb > 0]
         initC = initC.loc[((initC.kstar_1 == 14) & (initC.kstar_2 < 10))]
-
 
     dat_today = initC[columns_keep]
     return dat_today
@@ -471,7 +477,7 @@ def sample_stars(stars, mets, n_samp):
     """
 
     # Sample a population from the stars DataFrame
-    samp = stars.sample(n_samp, replace = True)
+    samp = stars.sample(n_samp, replace=True)
 
     # find cosmic metallicities which closest match to sfh metallicities
     ind_match = match_metallicities(met_list=mets,
@@ -521,7 +527,7 @@ def connect_simulations_to_stars(sample, sys_type, path, mets, lifetime_interp, 
     sim_set : `DataFrame`
         Dataset of cosmic binaries with positions, ages, and metallicities
         according to the sfh of the samp data
-    """ 
+    """
 
     sim_set = []
     initC_set = []
@@ -538,7 +544,7 @@ def connect_simulations_to_stars(sample, sys_type, path, mets, lifetime_interp, 
             # for single stars. 
             # (NOTE: this is not very strict, the lifetime can be 1000x's the age and still not get cut)
             initC_matches = filter_sim_set(initC_matches, lifetime_interp)
-             
+
             if len(initC_matches) > 0:
                 if len(initC_set) == 0:
                     initC_set = initC_matches
@@ -552,11 +558,11 @@ def connect_simulations_to_stars(sample, sys_type, path, mets, lifetime_interp, 
         # the grids to the Galactic population
         initC_set = initC_set.reset_index(drop=True)
         initC_set = initC_set.reset_index(drop=False)
-        initC_set = initC_set.rename(columns={"bin_num": "bin_num_grid", "index": "bin_num"}) 
+        initC_set = initC_set.rename(columns={"bin_num": "bin_num_grid", "index": "bin_num"})
 
         # evolve the selected binaries to the precise ages 
         # supplied by the star sample
         initC_set = initC_set.reset_index(drop=True)
         sim_set = get_evolved_systems(initC_set, sys_type, n_proc)
-        
+
     return sim_set

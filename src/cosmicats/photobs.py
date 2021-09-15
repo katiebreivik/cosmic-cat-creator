@@ -6,9 +6,9 @@ import astropy.coordinates as coord
 from astropy.coordinates import SkyCoord
 from dustmaps.bayestar import BayestarQuery
 
-
 __all__ = ['log_g', 'M_absolute_bol', 'm_apparent', 'm_abs', 'get_mags',
            'addMags', 'get_extinction', 'get_photometry_1', 'get_photometry_2']
+
 
 def log_g(mass, radius):
     """ Computes log g in cgs units
@@ -29,13 +29,14 @@ def log_g(mass, radius):
     G_cgs = 6.67e-8
     Msun_cgs = 1.989e33
     Rsun_cgs = 6.9551e10
-    
-    g = G_cgs*mass*Msun_cgs/(radius*Rsun_cgs)**2
-    
+
+    g = G_cgs * mass * Msun_cgs / (radius * Rsun_cgs) ** 2
+
     return np.log10(g)
 
+
 def M_absolute_bol(lum):
-    """Computues the absolute bolometric luminosity
+    """Computes the absolute bolometric luminosity
 
     Parameters
     ----------
@@ -48,22 +49,24 @@ def M_absolute_bol(lum):
         absolute bolometric magnitude
     """
     log_lum = np.log10(lum)
-    M_bol = 4.75-2.7*log_lum
+    M_bol = 4.75 - 2.7 * log_lum
     return M_bol
 
+
 def m_apparent(M_abs, dist):
-    #distance in parsecs
-    m_app = M_abs + 5*np.log10(dist/10)
+    # distance in parsecs
+    m_app = M_abs + 5 * np.log10(dist / 10)
     return m_app
 
+
 def m_abs(m_app, dist):
-    #distance in parsecs
-    M_abs = m_app - 5*np.log10(dist/10)
+    # distance in parsecs
+    M_abs = m_app - 5 * np.log10(dist / 10)
     return M_abs
 
 
 def get_mags(lum, distance, teff, logg, Fe_h, Av, bc_grid, filters):
-    """ uses isochrones bolometric correction method to interpolate 
+    """ Uses isochrones bolometric correction method to interpolate
     across the MIST bolometric correction grid
     
      Parameters
@@ -100,16 +103,15 @@ def get_mags(lum, distance, teff, logg, Fe_h, Av, bc_grid, filters):
     m_app = m_apparent(M_abs=M_abs, dist=distance * 1000)
     BCs_app = bc_grid.interp([teff, logg, Fe_h, Av], filters)
     BCs_abs = bc_grid.interp([teff, logg, Fe_h, np.zeros_like(Av)], filters)
-    mags_app = []
-    mags_app.append(m_app)
+    mags_app = [m_app]
     for ii, filt in zip(range(len(filters)), filters):
-        mags_app.append(m_app - BCs_app[:,ii])
-    mags_abs = []
-    mags_abs.append(m_app)
+        mags_app.append(m_app - BCs_app[:, ii])
+    mags_abs = [m_app]
     for ii, filt in zip(range(len(filters)), filters):
-        mags_abs.append(M_abs - BCs_abs[:,ii])
-    
+        mags_abs.append(M_abs - BCs_abs[:, ii])
+
     return mags_app, mags_abs
+
 
 def addMags(mag1, mag2):
     """ Adds two stellar magnitudes
@@ -124,17 +126,17 @@ def addMags(mag1, mag2):
     magsum : `float/array`
         returns the sum of mag1 and mag2
     """
-    magsum = -2.5*np.log10(10**(-mag1*0.4)+10**(-mag2*0.4))
+    magsum = -2.5 * np.log10(10 ** (-mag1 * 0.4) + 10 ** (-mag2 * 0.4))
     return magsum
 
 
 def get_extinction(dat):
     """Calculates the visual extinction values from the dat
-    DataFrame using the dustmaps. bayestar query
+    DataFrame using the dustmaps.bayestar query
 
     Parameters
     ----------
-    dat : `DataFrame`
+    dat : `pandas.DataFrame`
         contains Galactocentric cartesian coordinates
         with names [units]: X [kpc], Y [kpc], Z [kpc]
 
@@ -145,53 +147,92 @@ def get_extinction(dat):
 
     """
     c = SkyCoord(x=np.array(dat.X) * u.kpc,
-                 y=np.array(dat.Y) * u.kpc, 
+                 y=np.array(dat.Y) * u.kpc,
                  z=np.array(dat.Z) * u.kpc,
                  frame=coord.Galactocentric)
     bayestar = BayestarQuery(max_samples=2, version='bayestar2019')
     ebv = bayestar(c, mode='random_sample')
     Av = 3.2 * ebv
-        
-    return Av  
+
+    return Av
 
 
-def get_photometry_1(dat, bc_grid):
+def get_photometry(mass, rad, lum, dist, teff, FeH, Av, bc_grid):
+    """Computes photometry for single star
+
+    Parameters
+    ----------
+    mass : `numpy.array`
+        mass in Msun
+
+    rad : `numpy.array`
+        radius in Rsun
+
+    lum : `numpy.array`
+        luminosity in Lsun
+
+    dist : `numpy.array`
+        distance in kpc
+
+    teff : `numpy.array`
+        effective temperature in K
+
+    FeH : `numpy.array`
+        iron abundance
+
+    Av : `numpy.array`
+        extinction value
+
+    bc_grid : `isochrones.mist.bc`
+        bolometric correction grid for photometry
+
+    Returns
+    -------
+    m_app : `numpy.array`
+        apparent bolometric magnitude
+
+    J_app : `numpy.array`
+        apparent 2MASS J magnitude
+
+    H_app : `numpy.array`
+        apparent 2MASS H magnitude
+
+    K_app : `numpy.array`
+        apparent 2MASS K magnitude
+
+    G_app : `numpy.array`
+        apparent Gaia G magnitude
+
+    m_abs : `numpy.array`
+        absolute bolometric magnitude
+
+    J_abs : `numpy.array`
+        absolute 2MASS J magnitude
+
+    H_abs : `numpy.array`
+        absolute 2MASS h magnitude
+
+    K_abs : `numpy.array`
+        absolute 2MASS K magnitude
+
+    G_abs : `numpy.array`
+        absolute Gaia G magnitude
+    """
+
     # Now let's check out the brightness of the companions in 2MASS filters
     # for this we need to calculate log g of the companion
-    dat['logg_1'] = log_g(dat.mass_1, dat.rad_1)
-    
-    mags_app, mags_abs = get_mags(lum = dat.lum_1.values, 
-                                  distance = dat.dist.values, 
-                                  teff = dat.teff_1.values, 
-                                  logg = dat.logg_1.values, 
-                                  Fe_h = dat.FeH.values, 
-                                  Av = dat.Av.values, 
-                                  bc_grid = bc_grid,
-                                  filters = ['J', 'H', 'K', 'G'])
-    
-    [m_app_1, J_app_1, H_app_1, K_app_1, G_app_1] = mags_app 
-    [m_abs_1, J_abs_1, H_abs_1, K_abs_1, G_abs_1] = mags_abs
-    
-    
-    return m_app_1, J_app_1, H_app_1, K_app_1, G_app_1, m_abs_1, J_abs_1, H_abs_1, K_abs_1, G_abs_1
-    
-def get_photometry_2(dat, bc_grid):
-    # Now let's check out the brightness of the companions in 2MASS filters
-    # for this we need to calculate log g of the companion
-    dat['logg_2'] = log_g(dat.mass_2, dat.rad_2)
-    
-    mags_app, mags_abs = get_mags(lum = dat.lum_2.values, 
-                                  distance = dat.dist.values, 
-                                  teff = dat.teff_2.values, 
-                                  logg = dat.logg_2.values, 
-                                  Fe_h = dat.FeH.values, 
-                                  Av = dat.Av.values, 
-                                  bc_grid = bc_grid,
-                                  filters = ['J', 'H', 'K', 'G'])
-    
-    [m_app_2, J_app_2, H_app_2, K_app_2, G_app_2] = mags_app 
-    [m_abs_2, J_abs_2, H_abs_2, K_abs_2, G_abs_2] = mags_abs
-    
-    return m_app_2, J_app_2, H_app_2, K_app_2, G_app_2, m_abs_2, J_abs_2, H_abs_2, K_abs_2, G_abs_2
+    logg = log_g(mass, rad)
 
+    mags_app, mags_abs = get_mags(lum=lum,
+                                  distance=dist,
+                                  teff=teff,
+                                  logg=logg,
+                                  Fe_h=FeH,
+                                  Av=Av,
+                                  bc_grid=bc_grid,
+                                  filters=['J', 'H', 'K', 'G'])
 
+    [m_app, J_app, H_app, K_app, G_app] = mags_app
+    [m_abs, J_abs, H_abs, K_abs, G_abs] = mags_abs
+
+    return m_app, J_app, H_app, K_app, G_app, m_abs, J_abs, H_abs, K_abs, G_abs

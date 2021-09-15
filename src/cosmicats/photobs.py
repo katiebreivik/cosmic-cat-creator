@@ -167,12 +167,13 @@ def get_photometry_1(dat, bc_grid):
                                   Fe_h = dat.FeH.values, 
                                   Av = dat.Av.values, 
                                   bc_grid = bc_grid,
-                                  filters = ['J', 'H', 'K'])
+                                  filters = ['J', 'H', 'K', 'G'])
     
-    [m_app_1, J_app_1, H_app_1, K_app_1] = mags_app 
-    [m_abs_1, J_abs_1, H_abs_1, K_abs_1] = mags_abs
+    [m_app_1, J_app_1, H_app_1, K_app_1, G_app_1] = mags_app 
+    [m_abs_1, J_abs_1, H_abs_1, K_abs_1, G_abs_1] = mags_abs
     
-    return m_app_1, J_app_1, H_app_1, K_app_1, m_abs_1, J_abs_1, H_abs_1, K_abs_1
+    
+    return m_app_1, J_app_1, H_app_1, K_app_1, G_app_1, m_abs_1, J_abs_1, H_abs_1, K_abs_1, G_abs_1
     
 def get_photometry_2(dat, bc_grid):
     # Now let's check out the brightness of the companions in 2MASS filters
@@ -186,11 +187,11 @@ def get_photometry_2(dat, bc_grid):
                                   Fe_h = dat.FeH.values, 
                                   Av = dat.Av.values, 
                                   bc_grid = bc_grid,
-                                  filters = ['J', 'H', 'K'])
+                                  filters = ['J', 'H', 'K', 'G'])
     
-    [m_app_2, J_app_2, H_app_2, K_app_2] = mags_app 
-    [m_abs_2, J_abs_2, H_abs_2, K_abs_2] = mags_abs
+    [m_app_2, J_app_2, H_app_2, K_app_2, G_app_2] = mags_app 
+    [m_abs_2, J_abs_2, H_abs_2, K_abs_2, G_abs_2] = mags_abs
     
-    return m_app_2, J_app_2, H_app_2, K_app_2, m_abs_2, J_abs_2, H_abs_2, K_abs_2
+    return m_app_2, J_app_2, H_app_2, K_app_2, G_app_2, m_abs_2, J_abs_2, H_abs_2, K_abs_2, G_abs_2
 
 

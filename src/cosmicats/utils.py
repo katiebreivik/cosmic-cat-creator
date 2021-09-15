@@ -53,7 +53,7 @@ def get_FeH_from_Z(Z, Z_sun=0.014):
 
     return FeH
 
-def sim_data_read(path, metallicity, qmin):
+def sim_data_read(path, metallicity, var):
     """Read in the data from the simulated binary data set
     and get it in a format that is easy to use for this project
 
@@ -63,8 +63,8 @@ def sim_data_read(path, metallicity, qmin):
         path to where the data is stored
     metallicity : `float`
         metallicity of simulated systems along metallicity grid
-    qmin : `int`
-        integer which specifies the qmin model
+    var : `str`
+        string which specifies the model variation
         
    
     Returns
@@ -80,14 +80,14 @@ def sim_data_read(path, metallicity, qmin):
         initC = pd.read_hdf(path+str(metallicity)+'/'+filename, key='initC')
     
     elif 'binary' in path:
-        filename = 'binaries_qmin_{}.h5'.format(qmin)
+        filename = 'binaries_{}.h5'.format(var)
         dat = pd.read_hdf(path+str(metallicity)+'/'+filename, key='bpp')
         initC = pd.read_hdf(path+str(metallicity)+'/'+filename, key='initC')
     
     elif 'BH' in path:
         filename = 'dat_kstar1_14_kstar2_0_9_SFstart_13700.0_SFduration_0.0_metallicity_'+str(metallicity)+'.h5'
-        dat = pd.read_hdf(path+'/'+filename, key='bpp')
-        initC = pd.read_hdf(path+'/'+filename, key='initCond')
+        dat = pd.read_hdf(path+'/'+var+'/'+filename, key='bpp')
+        initC = pd.read_hdf(path+'/'+var+'/'+filename, key='initCond')
 
     return dat, initC
 
